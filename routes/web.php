@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\AccountController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CustomerPanelController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Auth\AuthController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,63 +18,10 @@ use App\Http\Controllers\Auth\AuthController;
 */
 
 Route::get('/', function () {
-    return redirect('/demo1');
+    // For the demo, let's point to the welcome page with WebAuthn
+    return view('welcome');
 });
 
-// Demo 1 routes
-Route::get('/demo1', function () {
-    return view('pages.demo1.index');
-});
-
-// Demo 2 routes
-Route::get('/demo2', function () {
-    return view('pages.demo2.index');
-});
-
-// Demo 3 routes
-Route::get('/demo3', function () {
-    return view('pages.demo3.index');
-});
-
-// Demo 4 routes
-Route::get('/demo4', function () {
-    return view('pages.demo4.index');
-});
-
-// Demo 5 routes
-Route::get('/demo5', function () {
-    return view('pages.demo5.index');
-});
-
-// Demo 6 routes
-Route::get('/demo6', function () {
-    return view('pages.demo6.index');
-});
-
-// Demo 7 routes
-Route::get('/demo7', function () {
-    return view('pages.demo7.index');
-});
-
-// Demo 8 routes
-Route::get('/demo8', function () {
-    return view('pages.demo8.index');
-});
-
-// Demo 9 routes
-Route::get('/demo9', function () {
-    return view('pages.demo9.index');
-})->name('demo9.index');
-
-Route::get('/demo9/profile', function () {
-    return view('pages.demo9.profile');
-})->name('demo9.profile');
-
-
-// Demo 10 routes
-Route::get('/demo10', function () {
-    return view('pages.demo10.index');
-});
 
 // Account routes
 Route::resource('accounts', AccountController::class);
@@ -83,3 +32,34 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [AuthController::class, 'register']);
+
+
+/*
+|--------------------------------------------------------------------------
+| Customer Panel Routes
+|--------------------------------------------------------------------------
+|
+| Routes for the customer self-service panel.
+|
+*/
+Route::middleware('auth')->prefix('customer')->name('customer.')->group(function () {
+    Route::get('/dashboard', [CustomerPanelController::class, 'dashboard'])->name('dashboard');
+    Route::get('/bills', [CustomerPanelController::class, 'bills'])->name('bills');
+    Route::get('/payments', [CustomerPanelController::class, 'payments'])->name('payments');
+});
+
+
+// Keep the demo routes for now
+Route::prefix('demo')->group(function () {
+    Route::get('/1', function () { return view('pages.demo1.index'); });
+    Route::get('/2', function () { return view('pages.demo2.index'); });
+    Route::get('/3', function () { return view('pages.demo3.index'); });
+    Route::get('/4', function () { return view('pages.demo4.index'); });
+    Route::get('/5', function () { return view('pages.demo5.index'); });
+    Route_::get('/6', function () { return view('pages.demo6.index'); });
+    Route::get('/7', function () { return view('pages.demo7.index'); });
+    Route::get('/8', function () { return view('pages.demo8.index'); });
+    Route::get('/9', function () { return view('pages.demo9.index'); })->name('demo9.index');
+    Route::get('/9/profile', function () { return view('pages.demo9.profile'); })->name('demo9.profile');
+    Route::get('/10', function () { return view('pages.demo10.index'); });
+});
