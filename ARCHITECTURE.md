@@ -527,6 +527,26 @@ Queue::push(new SendEmailJob);
 - `ipv4_pools` - IP address pools
 - `pppoe_profiles` - PPPoE configurations
 
+## 📂 Sample Files
+
+A few sample configurations and reference files have been uploaded to the repository.  
+You can find them here: [sample/](https://github.com/i4edubd/isp/tree/main/sample)
+
+### 🔧 Usage Notes
+- **Local Testing**: Use these samples as seed data when setting up a local development environment.  
+  Example: import sample SQL files into your test database to quickly validate schema and billing logic.
+- **Configuration Reference**: Review sample router and RADIUS configs to understand expected integration points.  
+  These can be adapted for your own MikroTik or FreeRADIUS setup.
+- **Workflow Validation**: Apply sample customer and billing records to simulate daily/monthly billing cycles.  
+  This helps confirm expiry notifications, package termination, and commission splits.
+- **Panel Demonstration**: Use sample accounts to test role-based access across the eight panels (Admin, Reseller, Sub-reseller, etc.).
+- **SMS/Payment Gateways**: Samples include request/response formats for gateway APIs.  
+  Developers can use these as templates when implementing Maestro, bKash, Nagad, Rocket, and other integrations.
+
+> ⚠️ **Note**: These samples are for demonstration and testing purposes only.  
+> Do not use them in production without adapting to your own environment and credentials.
+
+
 ## Security Architecture
 
 ### Authentication
