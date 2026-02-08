@@ -1,0 +1,95 @@
+deny_realms {
+	if (&User-Name && (&User-Name =~ /@|\\/)) {
+		reject
+	}
+}
+filter_username {
+	if (&User-Name) {
+		if (&User-Name =~ / /) {
+			update request {
+				&Module-Failure-Message += 'Rejected: User-Name contains whitespace'
+			}
+			reject
+		}
+		if (&User-Name =~ /@[^@]*@/ ) {
+			update request {
+				&Module-Failure-Message += 'Rejected: Multiple @ in User-Name'
+			}
+			reject
+		}
+		if (&User-Name =~ /\.\./ ) {
+			update request {
+				&Module-Failure-Message += 'Rejected: User-Name contains multiple ..s'
+			}
+			reject
+		}
+		if ((&User-Name =~ /@/) && (&User-Name !~ /@(.+)\.(.+)$/))  {
+			update request {
+				&Module-Failure-Message += 'Rejected: Realm does not have at least one dot separator'
+			}
+			reject
+		}
+		if (&User-Name =~ /\.$/)  {
+			update request {
+				&Module-Failure-Message += 'Rejected: Realm ends with a dot'
+			}
+			reject
+		}
+		if (&User-Name =~ /@\./)  {
+			update request {
+				&Module-Failure-Message += 'Rejected: Realm begins with a dot'
+			}
+			reject
+		}
+	}
+}
+filter_password {
+	if (&User-Password && \
+	   (&User-Password != "%{string:User-Password}")) {
+		update request {
+			&Tmp-String-0 := "%{string:User-Password}"
+			&User-Password := "%{string:Tmp-String-0}"
+			&Tmp-String-0 !* ""
+		}
+	 }
+}
+filter_inner_identity {
+	if (!&outer.request:User-Name || !&User-Name) {
+		update request {
+			Module-Failure-Message = "User-Name is required for tunneled authentication"
+		}
+		reject
+	}
+	if (&outer.request:User-Name != &User-Name) {
+		if (&outer.request:User-Name =~ /@([^@]+)$/) {
+			update request {
+				Outer-Realm-Name = "%{1}"
+			}
+			if (&outer.request:User-Name !~ /^(anon|@)/) {
+				update request {
+					Module-Failure-Message = "User-Name is not anonymized"
+				}
+				reject
+			}
+		}
+		elsif (&outer.request:User-Name !~ /^anon/) {
+			update request {
+				Module-Failure-Message = "User-Name is not anonymized"
+			}
+			reject
+		}
+		if (&User-Name =~ /@([^@]+)$/) {
+			update request {
+				Inner-Realm-Name = "%{1}"
+			}
+			if (&Outer-Realm-Name && \
+			    (&Inner-Realm-Name != &Outer-Realm-Name) && \
+			    (&Inner-Realm-Name !~ /\.%{Outer-Realm-Name}$/)) {
+				update request {
+					Module-Failure-Message = "Inner realm '%{Inner-Realm-Name}' and outer realm '%{Outer-Realm-Name}' are not from the same domain."
+				}
+				reject
+			}
+		}
+	}
+}

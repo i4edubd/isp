@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateYearlyCardDistributorPaymentsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::connection('pgsql')->create('yearly_card_distributor_payments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('operator_id');
+            $table->foreignId('card_distributor_id');
+            $table->string('month', 16);
+            $table->string('year', 16);
+            $table->string('amount_paid', 32)->default('0');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('yearly_card_distributor_payments');
+    }
+}
