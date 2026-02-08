@@ -1,0 +1,21 @@
+@extends ('laraview.layouts.sideNavLayout')
+
+@section('title')
+New customer
+@endsection
+
+@section('pageCss')
+@endsection
+
+@section('activeLink')
+@php
+$active_menu = '4';
+$active_link = '0';
+@endphp
+@endsection
+
+@section('sidebar')
+@include('admins.sub_operator.sidebar')
+@endsection
+
+@include('admins.components.customer-create')

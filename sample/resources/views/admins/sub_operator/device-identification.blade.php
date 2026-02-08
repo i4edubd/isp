@@ -1,0 +1,21 @@
+@extends ('laraview.layouts.sideNavLayout')
+
+@section ('title')
+Device Identification
+@endsection
+
+@section ('pageCss')
+@endsection
+
+@section('activeLink')
+@php
+$active_menu = '8';
+$active_link = '4';
+@endphp
+@endsection
+
+@section ('sidebar')
+@include('admins.sub_operator.sidebar')
+@endsection
+
+@include('admins.components.device-identification')
