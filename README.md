@@ -26,6 +26,155 @@ This document covers:
 For setup instructions and developer checklists, see **ARCHITECTURE.md**.
 
 
+## 🏗️ Architecture Overview
+
+### Backend (Laravel)
+- **Framework**: Built on Laravel (PHP).
+- **Authentication**: Uses **FreeRADIUS** for AAA (Authentication, Authorization, Accounting).
+- **Network Integration**: Communicates with **MikroTik routers** via RouterOS API.
+- **Database**: Relational DB with migrations; supports **WebAuthn** for passwordless login.
+- **Controllers**: Examples like `RadreplyController.php` and `RouterConfigurationController.php` handle router communication, IP/VLAN management, and AAA logic.
+
+### Frontend (Metronic + JS Libraries)
+- **Theme**: Metronic for admin/reseller dashboards.
+- **Libraries**:
+  - jQuery (DOM manipulation)
+  - Chart.js (traffic/payment visualizations)
+  - Alpine.js (interactivity)
+  - Axios (API calls)
+  - jQuery Mapael (maps for customer locations/network coverage)
+
+---
+
+## 🔑 Core Features
+- **Customer Management**: Supports PPPoE, Hotspot, and Static IP users.
+- **Billing & Payments**: Generates invoices (PDF/Excel), supports cash, online, and recharge cards.
+- **Network Management**: Direct MikroTik integration for traffic monitoring and router configuration.
+- **Role-Based Panels**: Separate dashboards for Admin, Reseller, Sub-Reseller, Manager, and Customer.
+
+---
+
+## 🔐 Authentication Models
+
+### PPPoE
+- Username/password stored in RADIUS.
+- Router forwards credentials → RADIUS verifies → assigns IP/bandwidth.
+- Supports MAC binding for security.
+
+### Hotspot
+- Self-registration via mobile number.
+- Device MAC captured and used as credential.
+- Seamless reconnection without manual login.
+
+---
+
+## 💰 Billing Models
+
+| Feature          | PPPoE + Daily Billing | PPPoE + Monthly Billing |
+|------------------|-----------------------|-------------------------|
+| Cycle            | Flexible (7–15 days)  | Fixed monthly           |
+| Bill Generation  | Manual recharge       | Auto-generated on 1st   |
+| Payment          | Strictly prepaid      | Prepaid or postpaid     |
+| Use Case         | Short-term reseller customers | Standard monthly subscribers |
+
+---
+
+## 👥 Reseller & Sub-Reseller Model
+- **Hierarchy**: Admin → Reseller → Sub-Reseller → Customer.
+- **Commission**: Automated revenue split across levels.
+- **Billing**: Supports prepaid/postpaid, daily/monthly cycles.
+- **Limitations**: Resellers can’t create packages or routers; only manage assigned customers.
+
+---
+
+## 📊 Database Schema (Simplified)
+- **customers**: username, password, connection type, package, billing profile, status, expiration.
+- **customer_bills**: amount, bill_date, due_date, status, customer_id.
+- **customer_payments**: amount, method, customer_id, operator_id, timestamps.
+
+---
+
+## 🔧 MikroTik API Integration
+- Automates router setup:
+  - Configures RADIUS for PPPoE & Hotspot.
+  - Sets firewall rules (e.g., block suspended users).
+  - Manages hotspot profiles, PPPoE sessions, duplicate session handling.
+- **Code Quality Suggestions**:
+  - Refactor long methods into services.
+  - Move hardcoded values (e.g., IP ranges) into config files.
+  - Improve error handling for API user checks.
+
+---
+
+## 📌 Summary
+**IspBills** is a full-stack ISP SaaS platform that centralizes customer management, billing, and router control.  
+It leverages Laravel + RADIUS for backend logic, Metronic + JS libraries for frontend dashboards, and MikroTik API for direct network enforcement.
+
+
+# ISPbills System Architecture
+
+This document provides an overview of the ISPbills system architecture, design patterns, and technical structure.
+
+
+
+## Directory Structure
+
+```
+IspBill/
+├── app/
+│   ├── Console/          # Artisan commands
+│   │   └── Commands/     # Custom commands
+│   ├── Events/           # Event classes
+│   ├── Exceptions/       # Exception handling
+│   ├── Http/
+│   │   ├── Controllers/  # Request handlers
+│   │   ├── Middleware/   # Request filters
+│   │   └── Requests/     # Form validation
+│   ├── Jobs/             # Queue jobs
+│   ├── Listeners/        # Event listeners
+│   ├── Mail/             # Mailable classes
+│   ├── Models/           # Eloquent models
+│   ├── Observers/        # Model observers
+│   ├── Policies/         # Authorization policies
+│   ├── Providers/        # Service providers
+│   ├── Services/         # Business logic services
+│   └── Traits/           # Reusable traits
+├── bootstrap/            # Framework bootstrap
+├── config/               # Configuration files
+├── database/
+│   ├── factories/        # Model factories
+│   ├── migrations/       # Database migrations
+│   │   ├── mysql/        # MySQL migrations
+│   │   └── pgsql/        # PostgreSQL migrations
+│   └── seeders/          # Database seeders
+├── public/               # Web root
+│   ├── doc/              # User documentation
+│   └── themes/           # Frontend themes
+├── resources/
+│   ├── css/              # CSS files
+│   ├── js/               # JavaScript files
+│   ├── lang/             # Language files
+│   └── views/            # Blade templates
+├── routes/               # Route definitions
+│   ├── api.php           # API routes
+│   ├── web.php           # Web routes
+│   ├── ajax.php          # AJAX routes
+│   └── auth.php          # Auth routes
+├── storage/              # Generated files
+│   ├── app/              # Application files
+│   ├── framework/        # Framework cache
+│   └── logs/             # Log files
+├── tests/                # Test files
+│   ├── Feature/          # Feature tests
+│   └── Unit/             # Unit tests
+└── vendor/               # Composer dependencies
+```
+
+Details see **ARCHITECTURE.md**.
+
+
+
+
 # Metronic Tailwind HTML Laravel Integration
 
 This project integrates Metronic Tailwind HTML themes into a Laravel application, providing 10 complete demo layouts showcasing different UI patterns and design approaches.
