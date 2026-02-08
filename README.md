@@ -1,3 +1,31 @@
+
+# ISP Bills
+
+ISP Bills is a full-stack SaaS solution for Internet Service Providers (ISPs).  
+It centralizes customer management, billing, router integration, and multi-role access panels.
+
+## 🚀 Getting Started
+To understand the system design, role hierarchy, and integration points, please review the detailed architecture guide:
+
+➡️ [ARCHITECTURE.md](https://github.com/i4edubd/isp/blob/main/ARCHITECTURE.md)
+
+This document covers:
+- Eight role-based panels (Developer, Super Admin, Admin, Reseller, Sub-reseller, Manager, Card Distributor, Customer).
+- Authentication and AAA via FreeRADIUS and MikroTik API.
+- Billing models (daily/monthly, prepaid/postpaid).
+- SMS and payment gateway integrations.
+- Database schema and workflow notes.
+- Sample files for testing and configuration ([sample/](https://github.com/i4edubd/isp/tree/main/sample)).
+
+## 🛠️ Development Notes
+- Backend: Laravel 12.x (PHP 8.2+)
+- Frontend: Tailwind CSS 3.x, Vite 5.x, Node.js LTS
+- Router Integration: MikroTik API
+- Authentication: FreeRADIUS + WebAuthn
+
+For setup instructions and developer checklists, see **ARCHITECTURE.md**.
+
+
 # Metronic Tailwind HTML Laravel Integration
 
 This project integrates Metronic Tailwind HTML themes into a Laravel application, providing 10 complete demo layouts showcasing different UI patterns and design approaches.

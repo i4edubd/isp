@@ -1,4 +1,10 @@
 
+# ISP Bills Architecture
+
+Develop a comprehensive web application designed for Internet Service Providers (ISPs) to manage their customers, billing, and network infrastructure.  
+This document serves as the primary reference for developers, outlining system design, role-based panels, authentication flows, billing models, gateway integrations, and sample configurations.
+
+
 # IspBills Application Overview
 
 ## 🏗️ Architecture Overview
