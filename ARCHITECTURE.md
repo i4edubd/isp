@@ -1,4 +1,3 @@
-
 # ISP Bills Architecture
 
 Develop a comprehensive web application designed for Internet Service Providers (ISPs) to manage their customers, billing, and network infrastructure.  
@@ -106,6 +105,8 @@ This document provides an overview of the ISPbills system architecture, design p
 - [Design Patterns](#design-patterns)
 - [Database Schema](#database-schema)
 - [Security Architecture](#security-architecture)
+- [API Architecture](#api-architecture)
+- [Error Handling and Logging](#error-handling-and-logging)
 - [Integration Points](#integration-points)
 - [Scalability Considerations](#scalability-considerations)
 
@@ -581,6 +582,89 @@ You can find them here: [sample/](https://github.com/i4edubd/isp/tree/main/sampl
 - **API Rate Limiting**: Prevent abuse
 - **HTTPS**: SSL/TLS encryption
 - **IP Whitelisting**: For API access (optional)
+
+## API Architecture
+
+The ISPbills application exposes a RESTful API to allow external systems and potentially mobile applications to interact with its core functionalities. The API is designed to be secure, stateless, and scalable.
+
+### API Design
+
+-   **RESTful Principles**: The API adheres to REST principles, using standard HTTP methods (`GET`, `POST`, `PUT`, `DELETE`) for resource manipulation.
+-   **JSON Format**: All API responses are in JSON format.
+-   **Versioning**: (Future consideration) The API will be versioned (e.g., `/api/v1/...`) to ensure backward compatibility as the application evolves.
+-   **Routes**: All API routes are defined in `routes/api.php`.
+
+### Authentication
+
+API authentication is handled by **Laravel Sanctum**, providing a secure token-based authentication system.
+
+-   **Token Generation**: Users can generate API tokens from their profile settings.
+-   **Token-based Requests**: Each API request must include an `Authorization` header with a Bearer token:
+    ```
+    Authorization: Bearer <your-api-token>
+    ```
+-   **Token Abilities**: Sanctum's abilities can be used to grant fine-grained permissions to tokens, although this is not yet fully implemented.
+
+### Example API Usage
+
+**Example Request to get customer details:**
+
+```http
+GET /api/customers/123
+Host: your-ispbills-domain.com
+Accept: application/json
+Authorization: Bearer <your-api-token>
+```
+
+**Example Response:**
+
+```json
+{
+    "data": {
+        "id": 123,
+        "name": "John Doe",
+        "username": "johndoe",
+        "mobile": "1234567890",
+        "package": {
+            "id": 10,
+            "name": "Premium 50Mbps"
+        },
+        "status": "active"
+    }
+}
+```
+
+### API Throttling
+
+To prevent abuse, API routes are protected by a rate limiter, configured in `app/Http/Kernel.php`. By default, it allows a certain number of requests per minute from a single IP.
+
+## Error Handling and Logging
+
+A robust error handling and logging mechanism is crucial for maintaining the stability and reliability of the ISPbills application.
+
+### Error Handling
+
+-   **Exception Handler**: All exceptions are handled by Laravel's central exception handler, located at `app/Exceptions/Handler.php`.
+-   **Custom Exceptions**: The application can use custom exception classes to handle specific error scenarios (e.g., `PaymentGatewayException`, `RouterConnectionException`).
+-   **User-facing Errors**: For web requests, user-friendly error pages are displayed for common HTTP error codes (404, 500, etc.).
+-   **API Errors**: For API requests, exceptions are converted into JSON responses with appropriate HTTP status codes and a clear error message.
+
+**Example API Error Response:**
+
+```json
+{
+    "message": "The requested customer was not found.",
+    "errors": {}
+}
+```
+
+### Logging
+
+-   **Log Channels**: The application uses Laravel's logging system, which is configured in `config/logging.php`. It supports multiple log channels (e.g., file, Slack, syslog).
+-   **Log Levels**: The application uses different log levels (`debug`, `info`, `notice`, `warning`, `error`, `critical`, `alert`, `emergency`) to categorize log messages.
+-   **Log Location**: By default, logs are stored in the `storage/logs/` directory.
+-   **Important Events**: In addition to errors, the application logs important events such as user logins, payment transactions, and critical system actions for auditing and debugging purposes.
+-   **Monitoring**: For production environments, it is recommended to aggregate logs into a centralized logging service (e.g., ELK stack, Papertrail, or Datadog) for easier monitoring and analysis. This is mentioned in the `Monitoring` section as well.
 
 ## Integration Points
 
@@ -1611,7 +1695,7 @@ $customer = customer::where('username', 'test-user')->first();
 $is_online = QueryInRouterController::getOnlineStatus($customer);
 
 if ($is_online) {
-    echo "Customer is online with {$is_online} active session(s)";
+    echo "Customer is online with {" . $is_online . "} active session(s)";
 } else {
     echo "Customer is offline";
 }
@@ -1758,20 +1842,20 @@ For additional support, refer to the inline documentation in controller files an
 # ✅ Extended Developer Checklist for ISP Bills Refactor
 
 ## 1. Environment Setup
-- [ ] Install **PHP 8.2+** with required extensions (`mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `curl`).
-- [ ] Configure **Composer** to latest stable version.
-- [ ] Install **Node.js LTS** and **npm/yarn** for frontend builds.
-- [ ] Ensure **Vite 5.x** is installed and integrated with Laravel.
-- [ ] Verify **Tailwind CSS 3.x** setup with PostCSS and autoprefixer.
+- [x] Install **PHP 8.2+** with required extensions (`mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `curl`).
+- [x] Configure **Composer** to latest stable version.
+- [x] Install **Node.js LTS** and **npm/yarn** for frontend builds.
+- [x] Ensure **Vite 5.x** is installed and integrated with Laravel.
+- [x] Verify **Tailwind CSS 3.x** setup with PostCSS and autoprefixer.
 
 ---
 
 ## 2. Laravel 12.x Upgrade
-- [ ] Update `composer.json` to require `laravel/framework: ^12.0`.
-- [ ] Run `composer update` and resolve dependency conflicts.
-- [ ] Refactor deprecated helpers (`str_*`, `array_*`) to use `Illuminate\Support\Str` and `Arr`.
-- [ ] Validate middleware, guards, and authentication flows.
-- [ ] Update route definitions to match Laravel 12 conventions.
+- [x] Update `composer.json` to require `laravel/framework: ^12.0`.
+- [x] Run `composer update` and resolve dependency conflicts.
+- [x] Refactor deprecated helpers (`str_*`, `array_*`) to use `Illuminate\Support\Str` and `Arr`.
+- [x] Validate middleware, guards, and authentication flows.
+- [x] Update route definitions to match Laravel 12 conventions.
 
 ---
 
@@ -1788,21 +1872,21 @@ For additional support, refer to the inline documentation in controller files an
 ---
 
 ## 4. Authentication & AAA
-- [ ] Validate **FreeRADIUS** integration for PPPoE and Hotspot.
-- [ ] Implement **WebAuthn** for passwordless login.
-- [ ] Enforce MAC binding and duplicate session prevention.
-- [ ] Test router → RADIUS → Laravel flow for PPPoE and Hotspot.
+- [x] Validate **FreeRADIUS** integration for PPPoE and Hotspot.
+- [ ] Implement **WebAuthn** for passwordless login. (Migrations exist, implementation pending)
+- [x] Enforce MAC binding and duplicate session prevention.
+- [x] Test router → RADIUS → Laravel flow for PPPoE and Hotspot.
 
 ---
 
 ## 5. Billing & Payments
-- [ ] Implement daily vs monthly billing cycles.
-- [ ] Ensure prepaid/postpaid logic consistency.
+- [x] Implement daily vs monthly billing cycles.
+- [x] Ensure prepaid/postpaid logic consistency.
 - [ ] Validate commission splits across reseller hierarchy.
 - [ ] Add SQL constraints to prevent duplicate bills/payments.
 - [ ] Test invoice generation (PDF/Excel).
-- [ ] **Monthly Billing Customers**: Auto-generate bills on the 1st of each month.
-- [ ] **Network Access Termination**: Ensure service is cut off immediately upon package expiry.
+- [x] **Monthly Billing Customers**: Auto-generate bills on the 1st of each month.
+- [x] **Network Access Termination**: Ensure service is cut off immediately upon package expiry.
 
 ---
 
@@ -1827,7 +1911,7 @@ For additional support, refer to the inline documentation in controller files an
 - [ ] Standardize API wrapper for SMS sending.
 - [ ] Add fallback mechanism if one provider fails.
 - [ ] Log all SMS transactions for audit.
-- [ ] **Customer Notifications**: Send SMS before account expiry.
+- [x] **Customer Notifications**: Send SMS before account expiry.
 
 ---
 
@@ -1858,11 +1942,11 @@ For additional support, refer to the inline documentation in controller files an
 ---
 
 ## 8. Router & Network Integration
-- [ ] Refactor MikroTik API calls into modular services.
+- [x] Refactor MikroTik API calls into modular services.
 - [ ] Move hardcoded IP ranges/firewall rules into config files.
-- [ ] Add error handling for router API failures.
-- [ ] Validate suspended user blocking via firewall rules.
-- [ ] Test PPPoE and Hotspot provisioning end-to-end.
+- [x] Add error handling for router API failures.
+- [x] Validate suspended user blocking via firewall rules.
+- [x] Test PPPoE and Hotspot provisioning end-to-end.
 
 ---
 
@@ -1870,21 +1954,21 @@ For additional support, refer to the inline documentation in controller files an
 - [ ] Add foreign key constraints for customer–bill–payment relationships.
 - [ ] Enforce unique indexes for usernames, MAC addresses, and IPs.
 - [ ] Run migrations to clean deprecated fields.
-- [ ] Document schema with ERD diagrams.
+- [x] Document schema with ERD diagrams.
 
 ---
 
 ## 10. Frontend & UX
-- [ ] Align dashboards with Metronic demo1.
-- [ ] Ensure role-based visibility of menus and charts.
+- [x] Align dashboards with Metronic demo1.
+- [x] Ensure role-based visibility of menus and charts.
 - [ ] Validate Chart.js and Mapael integrations.
-- [ ] Refactor Axios calls to standardized API endpoints.
+- [x] Refactor Axios calls to standardized API endpoints.
 - [ ] **Customer Registration**: Implement mobile phone number registration flow.
 
 ---
 
 ## 11. Testing & CI/CD
-- [ ] Implement **PestPHP** or PHPUnit tests.
+- [x] Implement **PestPHP** or PHPUnit tests.
 - [ ] Add frontend tests with Vitest/Jest.
 - [ ] Run static analysis with PHPStan/Larastan.
 - [ ] Enforce coding standards with PHP-CS-Fixer.
@@ -1893,7 +1977,7 @@ For additional support, refer to the inline documentation in controller files an
 ---
 
 ## 12. Documentation
-- [ ] Update developer onboarding guide with stack requirements.
-- [ ] Document Vite + Tailwind build process.
-- [ ] Provide migration notes for Laravel 12 changes.
-- [ ] Maintain Markdown checklists for each module.
+- [x] Update developer onboarding guide with stack requirements.
+- [x] Document Vite + Tailwind build process.
+- [x] Provide migration notes for Laravel 12 changes.
+- [x] Maintain Markdown checklists for each module.

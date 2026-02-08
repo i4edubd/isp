@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use Illuminate\Support\Facades\Route;
-Route::get('/', function () { return redirect('/demo1'); });
-use App\Http\Controllers\Demo1Controller;
-use App\Http\Controllers\Demo2Controller;
+use App\Http\Controllers\Auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +16,7 @@ use App\Http\Controllers\Demo2Controller;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/demo1');
 });
 
 // Demo 1 routes
@@ -69,7 +68,18 @@ Route::get('/demo9/profile', function () {
     return view('pages.demo9.profile');
 })->name('demo9.profile');
 
+
 // Demo 10 routes
 Route::get('/demo10', function () {
     return view('pages.demo10.index');
 });
+
+// Account routes
+Route::resource('accounts', AccountController::class);
+
+// Authentication routes
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('register', [AuthController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [AuthController::class, 'register']);
