@@ -1,5 +1,3 @@
-version: '2.2'
-
 services:
   app:
     build:
@@ -25,6 +23,11 @@ services:
       DB_DATABASE: ${DB_DATABASE:-ispsolution}
       DB_USERNAME: ${DB_USERNAME:-ispsolution}
       DB_PASSWORD: ${DB_PASSWORD:-secret}
+      # Secondary Connection for Radius
+      RADIUS_DB_HOST: radius-db
+      RADIUS_DB_DATABASE: ${RADIUS_DB_DATABASE:-radius}
+      RADIUS_DB_USERNAME: ${RADIUS_DB_USERNAME:-radius}
+      RADIUS_DB_PASSWORD: ${RADIUS_DB_PASSWORD:-secret}
     ports:
       - "8000:8000"
 
@@ -59,6 +62,24 @@ services:
       interval: 5s
       timeout: 2s
       retries: 10
+
+  freeradius:
+    image: freeradius/freeradius-server:latest
+    container_name: ispsolution-radius
+    restart: always
+    depends_on:
+      radius-db:
+        condition: service_healthy
+    ports:
+      - "1812:1812/udp"
+      - "1813:1813/udp"
+    environment:
+      RADIUS_DB_HOST: radius-db
+      RADIUS_DB_USER: ${RADIUS_DB_USERNAME:-radius}
+      RADIUS_DB_PASS: ${RADIUS_DB_PASSWORD:-secret}
+      RADIUS_DB_NAME: ${RADIUS_DB_DATABASE:-radius}
+    networks:
+      - ispsolution
 
 networks:
   ispsolution:

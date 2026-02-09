@@ -2,16 +2,16 @@
 
 ## 1. Environment Setup
 - [x] Install **PHP 8.2+** with required extensions (`mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `curl`).
-- [ ] Configure **Composer** to latest stable version.
-- [ ] Install **Node.js LTS** and **npm/yarn** for frontend builds.
-- [ ] Ensure **Vite 5.x** is installed and integrated with Laravel.
-- [ ] Verify **Tailwind CSS 3.x** setup with PostCSS and autoprefixer.
+- [x] Configure **Composer** to latest stable version.
+- [x] Install **Node.js LTS** and **npm/yarn** for frontend builds.
+- [x] Ensure **Vite 5.x** is installed and integrated with Laravel.
+- [x] Verify **Tailwind CSS 3.x** setup with PostCSS and autoprefixer.
 
 ---
 
 ## 2. Laravel 12.x Upgrade
-- [ ] Update `composer.json` to require `laravel/framework: ^12.0`.
-- [ ] Run `composer update` and resolve dependency conflicts.
+- [x] Update `composer.json` to require `laravel/framework: ^12.0`.
+- [x] Run `composer update` and resolve dependency conflicts.
 - [x] Refactor deprecated helpers (`str_*`, `array_*`) to use `Illuminate\Support\Str` and `Arr`.
 - [ ] Validate middleware, guards, and authentication flows.
 - [ ] Update route definitions to match Laravel 12 conventions.
