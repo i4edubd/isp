@@ -536,6 +536,13 @@ Queue::push(new SendEmailJob);
 - `ipv4_pools` - IP address pools
 - `pppoe_profiles` - PPPoE configurations
 
+
+## CRITICAL CONSTRAINT: >  DO NOT copy implementation logic or full functions from the /sample directory.
+
+The /sample folder should be used strictly for architecture reference only (e.g., checking directory structure, class naming styles, or file locations).
+
+All logic for current tasks (MikroTik, RADIUS, Billing) must be written fresh to support my specific tech stack (PHP 8.2, Docker, Laravel, Metronic theme).
+
 ## 📂 Sample Files
 
 A few sample configurations and reference files have been uploaded to the repository.  

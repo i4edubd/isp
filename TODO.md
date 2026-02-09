@@ -44,8 +44,8 @@
 - [ ] Validate commission splits across reseller hierarchy.
 - [ ] Add SQL constraints to prevent duplicate bills/payments.
 - [ ] Test invoice generation (PDF/Excel).
-- [x] **Monthly Billing Customers**: Auto-generate bills on the 1st of each month.
-- [x] **Network Access Termination**: Ensure service is cut off immediately upon package expiry.
+- [ ] **Monthly Billing Customers**: Auto-generate bills on the 1st of each month.
+- [ ] **Network Access Termination**: Ensure service is cut off immediately upon package expiry.
 
 ---
 
@@ -88,8 +88,8 @@
   - Walletmix Aggregator
   - BD Smart Pay Aggregator Service
 - [ ] **Manual/Other**:
-  - Recharge Card
-  - Send Money
+  -[ ] Recharge Card
+  -[ ] Send Money
 - [ ] Implement unified payment interface for all gateways.
 - [ ] Add webhook handling for payment confirmation.
 - [ ] Ensure PCI-DSS compliance for sensitive data.
@@ -101,11 +101,11 @@
 ---
 
 ## 8. Router & Network Integration
-- [x] Refactor MikroTik API calls into modular services.
+- [ ] Refactor MikroTik API calls into modular services.
 - [ ] Move hardcoded IP ranges/firewall rules into config files.
-- [x] Add error handling for router API failures.
-- [x] Validate suspended user blocking via firewall rules.
-- [x] Test PPPoE and Hotspot provisioning end-to-end.
+- [ ] Add error handling for router API failures.
+- [ ] Validate suspended user blocking via firewall rules.
+- [ ] Test PPPoE and Hotspot provisioning end-to-end.
 
 ---
 
@@ -127,7 +127,7 @@
 ---
 
 ## 11. Testing & CI/CD
-- [] Implement **PestPHP** or PHPUnit tests.
+- [ ] Implement **PestPHP** or PHPUnit tests.
 - [ ] Add frontend tests with Vitest/Jest.
 - [ ] Run static analysis with PHPStan/Larastan.
 - [ ] Enforce coding standards with PHP-CS-Fixer.
@@ -142,10 +142,10 @@
 - [ ] Maintain Markdown checklists for each module.
 
 
-## 📂 Sample Files
+## CRITICAL CONSTRAINT: >  DO NOT copy implementation logic or full functions from the /sample directory.
 
-A few sample configurations and reference files have been uploaded to the repository.  
+The /sample folder should be used strictly for architecture reference only (e.g., checking directory structure, class naming styles, or file locations).
+
+All logic for current tasks (MikroTik, RADIUS, Billing) must be written fresh to support my specific tech stack (PHP 8.2, Docker, Laravel, Metronic theme).
+
 You can find them here: [sample/](https://github.com/i4edubd/isp/tree/main/sample)
-
-> ⚠️ **Note**: These samples are for demonstration and testing purposes only.  
-> Do not use them in production without adapting to your own environment and credentials.
