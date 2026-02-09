@@ -1,4 +1,6 @@
-# ✅ Extended Developer Checklist for ISP Bills Ref## 1. Environment Setup
+# ✅ Developer TODO Checklist for ISP Bills 
+
+## 1. Environment Setup
 - [x] Install **PHP 8.2+** with required extensions (`mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `curl`).
 - [x] Configure **Composer** to latest stable version.
 - [x] Install **Node.js LTS** and **npm/yarn** for frontend builds.
