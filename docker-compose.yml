@@ -1,59 +1,65 @@
-version: '3'
+version: '2.2'
+
 services:
-    backend:
-        build:
-            context: .
-            dockerfile: Dockerfile.backend
-        image: sail-8.3/app
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
-        ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
-        environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
-            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-            IGNITION_LOCAL_SITES_PATH: '${PWD}'
-        volumes:
-            - '.:/var/www/html'
-        networks:
-            - sail
-        depends_on:
-            - mysql
-    frontend:
-        build:
-            context: ./frontend
-            dockerfile: Dockerfile
-        image: nginx:alpine
-        ports:
-            - "8080:80"
-        volumes:
-            - './frontend:/usr/share/nginx/html'
-        networks:
-            - sail
-    mysql:
-        image: 'mysql/mysql-server:8.0'
-        ports:
-            - '${FORWARD_DB_PORT:-3306}:3306'
-        environment:
-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ROOT_HOST: "%"
-            MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-        volumes:
-            - 'sail-mysql:/var/lib/mysql'
-        networks:
-            - sail
-        healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
-            retries: 3
-            timeout: 5s
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ispsolution-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - ispsolution
+    depends_on:
+      db:
+        condition: service_healthy
+      radius-db:
+        condition: service_healthy
+    environment:
+      APP_ENV: ${APP_ENV:-local}
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-ispsolution}
+      DB_USERNAME: ${DB_USERNAME:-ispsolution}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+    ports:
+      - "8000:8000"
+
+  db:
+    image: mysql:8.0
+    container_name: ispsolution-db
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-ispsolution}
+      MYSQL_USER: ${DB_USERNAME:-ispsolution}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+    networks:
+      - ispsolution
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p${DB_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+
+  radius-db:
+    image: mysql:8.0
+    container_name: ispsolution-radius-db
+    environment:
+      MYSQL_DATABASE: ${RADIUS_DB_DATABASE:-radius}
+      MYSQL_USER: ${RADIUS_DB_USERNAME:-radius}
+      MYSQL_PASSWORD: ${RADIUS_DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${RADIUS_DB_ROOT_PASSWORD:-root}
+    networks:
+      - ispsolution
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p${RADIUS_DB_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+
 networks:
-    sail:
-        driver: bridge
-volumes:
-    sail-mysql:
+  ispsolution:
+    driver: bridge

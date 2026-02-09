@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('billing_profiles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->enum('cycle', ['daily', 'weekly', 'monthly', 'yearly']);
-            $table->decimal('price', 15, 2);
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('role')->default('customer')->after('password')->index();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('billing_profiles');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('role');
+        });
     }
 };

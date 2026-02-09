@@ -17,17 +17,7 @@ class WebAuthnController extends Controller
      */
     public function generateRegistrationOptions(Request $request)
     {
-        // For this demo, we'll find a user or create a new one to simulate
-        // an authenticated session.
-        $user = User::firstOrCreate(
-            ['email' => 'test@example.com'],
-            ['name' => 'Test User', 'password' => bcrypt('password')]
-        );
-
-        // The user must be logged in to associate a new passkey with them.
-        Auth::login($user);
-
-        return WebAuthn::generateAttestation($user);
+        return WebAuthn::generateAttestation($request->user());
     }
 
     /**

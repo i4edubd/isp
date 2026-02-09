@@ -2,19 +2,19 @@
 
 ## 1. Environment Setup
 - [x] Install **PHP 8.2+** with required extensions (`mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `curl`).
-- [x] Configure **Composer** to latest stable version.
-- [x] Install **Node.js LTS** and **npm/yarn** for frontend builds.
-- [x] Ensure **Vite 5.x** is installed and integrated with Laravel.
-- [x] Verify **Tailwind CSS 3.x** setup with PostCSS and autoprefixer.
+- [] Configure **Composer** to latest stable version.
+- [] Install **Node.js LTS** and **npm/yarn** for frontend builds.
+- [] Ensure **Vite 5.x** is installed and integrated with Laravel.
+- [] Verify **Tailwind CSS 3.x** setup with PostCSS and autoprefixer.
 
 ---
 
 ## 2. Laravel 12.x Upgrade
-- [x] Update `composer.json` to require `laravel/framework: ^12.0`.
-- [x] Run `composer update` and resolve dependency conflicts.
+- [] Update `composer.json` to require `laravel/framework: ^12.0`.
+- [] Run `composer update` and resolve dependency conflicts.
 - [x] Refactor deprecated helpers (`str_*`, `array_*`) to use `Illuminate\Support\Str` and `Arr`.
-- [x] Validate middleware, guards, and authentication flows.
-- [x] Update route definitions to match Laravel 12 conventions.
+- [] Validate middleware, guards, and authentication flows.
+- [] Update route definitions to match Laravel 12 conventions.
 
 ---
 
@@ -31,10 +31,10 @@
 ---
 
 ## 4. Authentication & AAA
-- [x] Validate **FreeRADIUS** integration for PPPoE and Hotspot.
+- [] Validate **FreeRADIUS** integration for PPPoE and Hotspot.
 - [ ] Implement **WebAuthn** for passwordless login. (Migrations exist, implementation pending)
-- [x] Enforce MAC binding and duplicate session prevention.
-- [x] Test router → RADIUS → Laravel flow for PPPoE and Hotspot.
+- [] Enforce MAC binding and duplicate session prevention.
+- [] Test router → RADIUS → Laravel flow for PPPoE and Hotspot.
 
 ---
 
@@ -113,21 +113,21 @@
 - [ ] Add foreign key constraints for customer–bill–payment relationships.
 - [ ] Enforce unique indexes for usernames, MAC addresses, and IPs.
 - [ ] Run migrations to clean deprecated fields.
-- [x] Document schema with ERD diagrams.
+- [] Document schema with ERD diagrams.
 
 ---
 
 ## 10. Frontend & UX
-- [x] Align dashboards with Metronic demo1.
-- [x] Ensure role-based visibility of menus and charts.
+- [] Align dashboards with Metronic demo1.
+- [] Ensure role-based visibility of menus and charts.
 - [ ] Validate Chart.js and Mapael integrations.
-- [x] Refactor Axios calls to standardized API endpoints.
+- [] Refactor Axios calls to standardized API endpoints.
 - [ ] **Customer Registration**: Implement mobile phone number registration flow.
 
 ---
 
 ## 11. Testing & CI/CD
-- [x] Implement **PestPHP** or PHPUnit tests.
+- [] Implement **PestPHP** or PHPUnit tests.
 - [ ] Add frontend tests with Vitest/Jest.
 - [ ] Run static analysis with PHPStan/Larastan.
 - [ ] Enforce coding standards with PHP-CS-Fixer.
@@ -136,10 +136,10 @@
 ---
 
 ## 12. Documentation
-- [x] Update developer onboarding guide with stack requirements.
-- [x] Document Vite + Tailwind build process.
-- [x] Provide migration notes for Laravel 12 changes.
-- [x] Maintain Markdown checklists for each module.
+- [] Update developer onboarding guide with stack requirements.
+- [] Document Vite + Tailwind build process.
+- [] Provide migration notes for Laravel 12 changes.
+- [] Maintain Markdown checklists for each module.
 
 
 ## 📂 Sample Files
