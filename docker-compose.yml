@@ -23,7 +23,7 @@ services:
       DB_DATABASE: ${DB_DATABASE:-ispsolution}
       DB_USERNAME: ${DB_USERNAME:-ispsolution}
       DB_PASSWORD: ${DB_PASSWORD:-secret}
-      # Secondary Connection for Radius
+      # Secondary Connection for Radius (Laravel needs this in config/database.php)
       RADIUS_DB_HOST: radius-db
       RADIUS_DB_DATABASE: ${RADIUS_DB_DATABASE:-radius}
       RADIUS_DB_USERNAME: ${RADIUS_DB_USERNAME:-radius}
@@ -42,9 +42,9 @@ services:
     networks:
       - ispsolution
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-p${DB_ROOT_PASSWORD:-root}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root}"]
       interval: 5s
-      timeout: 2s
+      timeout: 5s
       retries: 10
 
   radius-db:
@@ -58,9 +58,9 @@ services:
     networks:
       - ispsolution
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-p${RADIUS_DB_ROOT_PASSWORD:-root}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${RADIUS_DB_ROOT_PASSWORD:-root}"]
       interval: 5s
-      timeout: 2s
+      timeout: 5s
       retries: 10
 
   freeradius:
@@ -74,6 +74,7 @@ services:
       - "1812:1812/udp"
       - "1813:1813/udp"
     environment:
+      # FreeRadius specific environment variables
       RADIUS_DB_HOST: radius-db
       RADIUS_DB_USER: ${RADIUS_DB_USERNAME:-radius}
       RADIUS_DB_PASS: ${RADIUS_DB_PASSWORD:-secret}

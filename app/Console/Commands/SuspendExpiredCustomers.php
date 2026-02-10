@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Customer;
+use App\Services\MikrotikService;
 use App\Services\Sms\SmsService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -85,7 +86,15 @@ class SuspendExpiredCustomers extends Command
         foreach ($expiredCustomers as $customer) {
             $customer->is_active = false;
             $customer->save();
-            $this->line("Suspended customer #{$customer->id} ({$customer->username}) due to package expiration on {$customer->package_expiry_date}.");
+            $this->line("Suspended customer #{$customer->id} ({$customer->username}) in database.");
+
+            try {
+                $mikrotikService = new MikrotikService($customer->router);
+                $mikrotikService->blockUser($customer->username, $customer->ip_address);
+                $this->line("Blocked customer #{$customer->id} ({$customer->username}) on router.");
+            } catch (\Exception $e) {
+                $this->error("Failed to block customer #{$customer->id} ({$customer->username}) on router: " . $e->getMessage());
+            }
         }
 
         $this->info('Finished suspending expired customers.');

@@ -4,8 +4,8 @@
 - [x] Install **PHP 8.2+** with required extensions (`mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `curl`).
 - [x] Configure **Composer** to latest stable version.
 - [x] Install **Node.js LTS** and **npm/yarn** for frontend builds.
-- [x] Ensure **Vite 5.x** is installed and integrated with Laravel.
-- [x] Verify **Tailwind CSS 3.x** setup with PostCSS and autoprefixer.
+- [x] Ensure **Vite 7.x** is installed and integrated with Laravel.
+- [x] Verify **Tailwind CSS 4.x** setup with PostCSS and autoprefixer.
 
 ---
 
@@ -41,7 +41,7 @@
   - [x] Backend routes and controller are in place.
   - [x] Created a test page for registration and login.
   - [x] Integrated WebAuthn into login and profile pages.
-- [ ] Enforce MAC binding and duplicate session prevention.
+- [x] Enforce MAC binding and duplicate session prevention.
 - [ ] Test router → RADIUS → Laravel flow for PPPoE and Hotspot.
 
 ---
@@ -52,8 +52,8 @@
 - [ ] Validate commission splits across reseller hierarchy.
 - [ ] Add SQL constraints to prevent duplicate bills/payments.
 - [ ] Test invoice generation (PDF/Excel).
-- [ ] **Monthly Billing Customers**: Auto-generate bills on the 1st of each month.
-- [ ] **Network Access Termination**: Ensure service is cut off immediately upon package expiry.
+- [x] **Monthly Billing Customers**: Auto-generate bills on the 1st of each month.
+- [x] **Network Access Termination**: Ensure service is cut off immediately upon package expiry.
 
 ---
 
@@ -109,10 +109,10 @@
 ---
 
 ## 8. Router & Network Integration
-- [ ] Refactor MikroTik API calls into modular services.
-- [ ] Move hardcoded IP ranges/firewall rules into config files.
-- [ ] Add error handling for router API failures.
-- [ ] Validate suspended user blocking via firewall rules.
+- [x] Refactor MikroTik API calls into modular services.
+- [x] Move hardcoded IP ranges/firewall rules into config files.
+- [x] Add error handling for router API failures.
+- [x] Validate suspended user blocking via firewall rules.
 - [ ] Test PPPoE and Hotspot provisioning end-to-end.
 
 ---

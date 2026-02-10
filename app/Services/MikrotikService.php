@@ -100,4 +100,63 @@ class MikrotikService
             throw new MikrotikServiceException('Failed to retrieve PPP profiles from the router.');
         }
     }
+
+    /**
+     * Add a firewall rule to block a user.
+     *
+     * @param string $username
+     * @param string $ipAddress
+     * @throws MikrotikServiceException
+     */
+    public function blockUser(string $username, string $ipAddress): void
+    {
+        try {
+            $this->client->query('/ip/firewall/address-list/add', [
+                'list' => config('mikrotik.firewall.suspended_list_name'),
+                'address' => $ipAddress,
+                'comment' => $username,
+            ])->read();
+        } catch (QueryException $e) {
+            Log::error('Failed to add firewall rule to Mikrotik router', [
+                'router_id' => $this->router->id,
+                'username' => $username,
+                'ip_address' => $ipAddress,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw new MikrotikServiceException('Failed to add firewall rule to the router.');
+        }
+    }
+
+    /**
+     * Disconnect a user.
+     *
+     * @param string $username
+     * @throws MikrotikServiceException
+     */
+    public function disconnectUser(string $username): void
+    {
+        try {
+            $this->client->query('/ppp/active/print', [
+                '.proplist' => '.id',
+                '?name' => $username,
+            ])->read();
+
+            $users = $this->client->read();
+
+            foreach ($users as $user) {
+                $this->client->query('/ppp/active/remove', [
+                    '.id' => $user['.id'],
+                ])->read();
+            }
+        } catch (QueryException $e) {
+            Log::error('Failed to disconnect user from Mikrotik router', [
+                'router_id' => $this->router->id,
+                'username' => $username,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw new MikrotikServiceException('Failed to disconnect user from the router.');
+        }
+    }
 }

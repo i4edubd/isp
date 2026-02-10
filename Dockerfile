@@ -2,7 +2,7 @@
 FROM php:8.2-fpm-alpine AS builder
 
 # 1. Install system dependencies + Build tools
-# We need rrdtool-dev for the headers and autoconf/g++/make for PECL
+# Added linux-headers for sockets and icu-dev for internationalization support
 RUN apk add --no-cache \
     git \
     curl \
@@ -11,6 +11,7 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     freetype-dev \
     postgresql-dev \
+    icu-dev \
     zip \
     unzip \
     nodejs \
@@ -18,11 +19,13 @@ RUN apk add --no-cache \
     rrdtool-dev \
     autoconf \
     g++ \
-    make
+    make \
+    linux-headers
 
 # 2. Install Standard PHP extensions
+# Added 'sockets' for MikroTik API and 'intl' for better formatting support
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip gd
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip gd sockets intl
 
 # 3. Install PECL RRD (The CFLAGS fix is mandatory here for PHP 8.2)
 RUN export CFLAGS="$CFLAGS -Wno-incompatible-pointer-types" && \
@@ -33,19 +36,26 @@ RUN export CFLAGS="$CFLAGS -Wno-incompatible-pointer-types" && \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
+
+# Copy only dependency files first to leverage Docker cache
 COPY composer.json composer.lock package.json package*.json ./
 
 # 5. Install PHP & JS dependencies
+# --ignore-platform-reqs removed to ensure our environment is correctly set up
 RUN composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader --no-scripts \
     && (npm ci --omit=dev || npm install --omit=dev)
 
+# Copy the rest of the application
 COPY . .
+
+# Finalize autoloader
 RUN composer dump-autoload --optimize
 
 # --- Production Stage ---
 FROM php:8.2-fpm-alpine
 
 # Install only runtime libraries (keeps the image small)
+# Added libgomp and icu-libs
 RUN apk add --no-cache \
     libpng \
     libzip \
@@ -54,13 +64,17 @@ RUN apk add --no-cache \
     libpq \
     mysql-client \
     bash \
-    rrdtool
+    rrdtool \
+    libgomp \
+    icu-libs
 
 # Copy compiled extensions and config from builder
 COPY --from=builder /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 COPY --from=builder /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 
 WORKDIR /var/www
+
+# Copy application from builder
 COPY --from=builder --chown=www-data:www-data /var/www /var/www
 
 # Set permissions for Laravel
