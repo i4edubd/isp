@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Customer;
-use App\Services\MikrotikService;
+use App\Services\RouterManagementService;
 use App\Services\Sms\SmsService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -89,11 +89,11 @@ class SuspendExpiredCustomers extends Command
             $this->line("Suspended customer #{$customer->id} ({$customer->username}) in database.");
 
             try {
-                $mikrotikService = new MikrotikService($customer->router);
-                $mikrotikService->blockUser($customer->username, $customer->ip_address);
-                $this->line("Blocked customer #{$customer->id} ({$customer->username}) on router.");
+                $routerService = new RouterManagementService($customer->router);
+                $routerService->suspendCustomer($customer->username, $customer->ip_address);
+                $this->line("Suspended customer on router #{$customer->id} ({$customer->username}).");
             } catch (\Exception $e) {
-                $this->error("Failed to block customer #{$customer->id} ({$customer->username}) on router: " . $e->getMessage());
+                $this->error("Failed to suspend customer on router #{$customer->id} ({$customer->username}): " . $e->getMessage());
             }
         }
 

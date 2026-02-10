@@ -1,0 +1,59 @@
+name: Auto CS Fixer
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 3 * * 0' # weekly on Sunday at 03:00 UTC
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v4
+        with:
+          php-version: '8.2'
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Run PHP-CS-Fixer (fix)
+        run: ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --using-cache=no
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: github-actions[bot]
+          author_email: 41898282+github-actions[bot]@users.noreply.github.com
+          message: "style: apply php-cs-fixer fixes"
+          add: '.'
+          push: false
+
+      - name: Create fix branch and push
+        env:
+          BRANCH: 'style/csfixer-fixes-automatic'
+        run: |
+          git checkout -b "$BRANCH"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes after csfixer"
+            exit 0
+          fi
+          git commit -m "style: apply php-cs-fixer fixes"
+          git push origin "$BRANCH"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "style: apply php-cs-fixer fixes"
+          branch: style/csfixer-fixes-automatic
+          title: "Automated: Apply PHP-CS-Fixer fixes"
+          body: |
+            This PR applies automated PHP-CS-Fixer formatting changes.
+            Please review and merge if acceptable.
+          labels: automated, style

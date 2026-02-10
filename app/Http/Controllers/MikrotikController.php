@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Router;
-use App\Services\MikrotikService;
+use App\Services\RouterManagementService;
 use App\Services\MikrotikServiceException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -19,9 +19,9 @@ class MikrotikController extends Controller
     public function show(Router $router)
     {
         try {
-            $mikrotikService = new MikrotikService($router);
-            $ipPools = $mikrotikService->getIpPools();
-            $pppProfiles = $mikrotikService->getPppProfiles();
+            $routerService = new RouterManagementService($router);
+            $ipPools = $routerService->getIpPools();
+            $pppProfiles = $routerService->getPppProfiles();
 
             return view('mikrotik.show', compact('router', 'ipPools', 'pppProfiles'));
         } catch (MikrotikServiceException $e) {

@@ -19,7 +19,10 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpunit/phpunit": "^11.5.3",
+        "phpstan/phpstan": "^1.11",
+        "nunomaduro/larastan": "^2.1",
+        "friendsofphp/php-cs-fixer": "^3.15"
     },
     "autoload": {
         "psr-4": {
@@ -56,7 +59,10 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
-        ]
+        ],
+        "phpstan": "phpstan analyse --configuration=phpstan.neon --memory-limit=1G",
+        "csfixer:check": "php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --using-cache=no --diff",
+        "csfixer:fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php"
     },
     "extra": {
         "laravel": {

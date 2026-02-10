@@ -150,6 +150,16 @@
 - [ ] Maintain Markdown checklists for each module.
 - [ ] Create Postman collection for API endpoints.
 
+---
+
+## Recent updates (developer notes)
+- Router integration: added `app/Services/RouterManagementService.php` — provides provisioning, suspend/resume, and safer query handling.
+- Controller/Command integration: replaced direct `MikrotikService` usage in `app/Http/Controllers/MikrotikController.php` and `app/Console/Commands/SuspendExpiredCustomers.php` to use `RouterManagementService`.
+- Tests: added `tests/Unit/RouterManagementServiceTest.php` (unit tests use an injectable fake client). Run via PHPUnit: `./vendor/bin/phpunit tests/Unit/RouterManagementServiceTest.php`.
+- Docs: added developer onboarding (DEVELOPER_ONBOARDING.md) with setup and test instructions.
+
+Please DO NOT copy logic from `/sample` into production — samples are reference-only as noted in ARCHITECTURE.md.
+
 
 ## CRITICAL CONSTRAINT: >  DO NOT copy implementation logic or full functions from the /sample directory.
 
