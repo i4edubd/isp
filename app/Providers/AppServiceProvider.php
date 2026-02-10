@@ -2,55 +2,41 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\TelegramEmergencyNotificationController;
+use App\Models\operator;
+use App\Observers\OperatorObserver;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
-use App\Models\Customer;
-use App\Observers\CustomerObserver;
-use App\Services\Sms\SmsGatewayInterface;
-use App\Services\Sms\CompositeGateway;
-use App\Services\Sms\MaestroGateway;
-use Illuminate\Support\Facades\Config;
-use App\Services\Payment\PaymentGatewayInterface;
-use App\Services\Payment\DummyGateway;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
+     *
+     * @return void
      */
-    public function register(): void
+    public function register()
     {
-        // Bind SMS gateway interface to a composite implementation using config order
-        $this->app->singleton(SmsGatewayInterface::class, function ($app) {
-            $cfg = Config::get('sms.gateways', []);
-            $classes = Config::get('sms.classes', []);
-
-            $instances = [];
-            foreach ($cfg as $key) {
-                $class = $classes[$key] ?? null;
-                if ($class && class_exists($class)) {
-                    $instances[] = new $class();
-                }
-            }
-
-            // Fallback to Maestro if none configured
-            if (empty($instances)) {
-                $instances[] = new MaestroGateway();
-            }
-
-            return new CompositeGateway($instances);
-        });
-
-        // Bind a dummy payment gateway - replace with real gateway bindings per environment
-        $this->app->singleton(PaymentGatewayInterface::class, function ($app) {
-            return new DummyGateway();
-        });
+        //
     }
 
     /**
      * Bootstrap any application services.
+     *
+     * @return void
      */
-    public function boot(): void
+    public function boot()
     {
-        Customer::observe(CustomerObserver::class);
+        Paginator::useBootstrap();
+
+        // Register observer for auto-creating default departments
+        operator::observe(OperatorObserver::class);
+
+        Queue::failing(function (JobFailed $event) {
+            $message = 'A job failed in ' . config('app.url') . ' >> Queue : ' . $event->job->getQueue();
+            TelegramEmergencyNotificationController::send($message);
+        });
     }
 }

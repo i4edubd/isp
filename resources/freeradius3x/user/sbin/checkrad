@@ -1,0 +1,229 @@
+#!/usr/bin/perl
+#version 1.1
+#modify by Md. sohag1426@gmail.com
+#note: default community: billing snmp_version: 2c
+#
+#		This is used by the FreeRADIUS server to check
+#		if its idea of a user logged in on a certain port/nas
+#		is correct if a double login is detected.
+#
+# Called as:	nas_type nas_ip nas_port login session_id
+#
+# Returns:	0 = no duplicate, 1 = duplicate, >1 = error.
+#
+
+$prefix        = "/usr";
+$localstatedir = "/var";
+$logdir        = "/var/log/freeradius";
+$sysconfdir    = "/etc";
+$raddbdir      = "/etc/freeradius";
+$debug         = "$logdir/checkrad.log";
+$snmpget       = "/usr/bin/snmpget";
+$snmpwalk      = "/usr/bin/snmpwalk";
+$snmp_timeout  = 5;
+$snmp_retries  = 1;
+$snmp_version  = "2c";
+$rusers        = "/usr/bin/rusers";
+$naspass       = "";
+
+# Community string. Change this if yours isn't "public".
+$cmmty_string = "billing";
+
+# path to finger command
+$finger = "/usr/bin/finger";
+
+# Extremely slow way of converting port descriptions to actual indexes
+$portisdescr = 0;
+
+# Realm used by Cisco sub
+$realm = '';
+
+#
+#	USR-Hiper: $hiper_density is the reported port density (default 256
+#	but 24 makes more sense)
+#
+$hiper_density = 256;
+
+#
+#	Try to load Net::Telnet, SNMP_Session etc.
+#	Do not complain if we cannot find it.
+#	Prefer a locally installed copy.
+#
+BEGIN {
+    unshift @INC, "/usr/share/perl";
+
+    eval "use Net::Telnet 3.00;";
+    $::HAVE_NET_TELNET = ( $@ eq "" );
+
+    eval "use SNMP_Session;";
+    if ( $@ eq "" ) {
+        eval "use BER;";
+        $::HAVE_SNMP_SESSION = ( $@ eq "" );
+        eval "use Socket;";
+    }
+}
+
+#
+#	Do snmpget by calling snmpget.
+#
+sub snmpget_prog {
+    my ( $host, $community, $oid ) = @_;
+    my ($ret);
+    local $_;
+
+    print LOG
+"snmpget: $snmpget -r $snmp_retries -t $snmp_timeout -v$snmp_version -c '$community' $host $oid\n";
+    $_ =
+`$snmpget -r $snmp_retries -t $snmp_timeout -v$snmp_version -c '$community' $host $oid`;
+    if (/^.*(\s|\")([0-9A-Za-z]{8})(\s|\"|$).*$/) {
+
+        # Session ID format.
+        $ret = $2;
+    }
+    elsif (/^.*=.*"(.*)"/) {
+
+        # oid = "...." junk format.
+        $ret = $1;
+    }
+    elsif (/^.*=\s*(?:.*:\s*)?(\S+)/) {
+
+        # oid = string format
+        $ret = $1;
+    }
+
+    # Strip trailing junk if any.
+    $ret =~ s/\s*Hex:.*$//;
+    $ret;
+}
+
+#
+#	Do snmpget by using SNMP_Session.
+#	Coded by Jerry Workman <jerry@newwave.net>
+#
+sub snmpget_session {
+    my ( $host, $community, $OID ) = @_;
+    my ($ret);
+    local $_;
+    my ( @enoid, $var, $response, $bindings, $binding, $value );
+    my ( $inoid, $outoid, $upoid, $oid, @retvals );
+
+    $OID =~ s/^.iso.org.dod.internet.private.enterprises/.1.3.6.1.4.1/;
+
+    push @enoid, encode_oid( ( split /\./, $OID ) );
+    srand();
+
+    my $session = SNMP_Session->open( $host, $community, 161 );
+    if ( !$session->get_request_response(@enoid) ) {
+        $e = "No SNMP answer from $ARGV[0].";
+        print LOG "$e\n" if ($debug);
+        print STDERR "checkrad: $e\n";
+        return "";
+    }
+    $response = $session->pdu_buffer;
+    ($bindings) = $session->decode_get_response($response);
+    $session->close();
+    while ($bindings) {
+        ( $binding, $bindings ) = decode_sequence($bindings);
+        ( $oid, $value ) = decode_by_template( $binding, "%O%@" );
+        my $tempo = pretty_print($value);
+        $tempo =~ s/\t/ /g;
+        $tempo =~ s/\n/ /g;
+        $tempo =~ s/^\s+//;
+        $tempo =~ s/\s+$//;
+
+        push @retvals, $tempo;
+    }
+    $retvals[0];
+}
+
+#
+#	Do snmpget
+#
+sub snmpget {
+
+    my $ret;
+
+    if ($::HAVE_SNMP_SESSION) {
+        $ret = snmpget_session(@_);
+    }
+    elsif ( -x $snmpget ) {
+        $ret = snmpget_prog(@_);
+    }
+    else {
+        $e = "Neither SNMP_Session module or $snmpget found!";
+        print LOG "$e\n" if ($debug);
+        print STDERR "checkrad: $e\n";
+        $ret = "";
+    }
+
+    $ret;
+}
+
+sub mikrotik_snmp {
+
+    # ARGV: 1=nas_ip, 2=nas_port, 3=login/username, 4=sessid
+    #.1.3.6.1.2.1.2.2.1.2 - ifDescr
+    # Set SNMP version
+    $snmp_version = "2c";
+
+    # We want interface descriptions
+    #$oid = "ifDescr";
+    $oid = ".1.3.6.1.2.1.2.2.1.2.$ARGV[2]";
+    $out = snmpget( $ARGV[1], $cmmty_string, $oid );
+
+    #lets return something
+    if ( $out =~ /pppoe/ ) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+###############################################################################
+
+if ($debug) {
+    if ( $debug eq 'stdout' ) {
+        open( LOG, ">&STDOUT" );
+    }
+    elsif ( $debug eq 'stderr' ) {
+        open( LOG, ">&STDERR" );
+    }
+    else {
+        open( LOG, ">>$debug" );
+        $now = localtime;
+        print LOG "$now checkrad @ARGV\n";
+    }
+}
+
+if ( $#ARGV != 4 ) {
+    print LOG "Usage: checkrad nas_type nas_ip "
+      . "nas_port login session_id\n"
+      if ($debug);
+    print STDERR "Usage: checkrad nas_type nas_ip "
+      . "nas_port login session_id\n"
+      unless ( $debug =~ m/^(stdout|stderr)$/ );
+    close LOG if ($debug);
+    exit(2);
+}
+
+if ( $ARGV[0] eq 'mikrotik_snmp' ) {
+    $ret = &mikrotik_snmp;
+}
+else {
+    print LOG "  checkrad: unknown NAS type $ARGV[0]\n" if ($debug);
+    print STDERR "checkrad: unknown NAS type $ARGV[0]\n";
+    $ret = 2;
+}
+
+if ($debug) {
+    $mn = "login ok";
+    $mn = "double detected" if ( $ret == 1 );
+    $mn = "error detected" if ( $ret == 2 );
+    print LOG "  Returning $ret ($mn)\n";
+    close LOG;
+}
+
+#Testing
+#print $ret;
+exit($ret);

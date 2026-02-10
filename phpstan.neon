@@ -6,3 +6,5 @@ parameters:
     - routes
   ignoreErrors:
     - '#Call to an undefined method Tests#'
+  excludes_analyse:
+    - tests
