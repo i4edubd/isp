@@ -1,0 +1,5 @@
+- We are migrating from AdminLTE (Bootstrap) to Metronic Demo 1 (Tailwind).
+- Source logic is located in: /sample/resources/views
+- Asset Bundler: Vite
+- Styling: Tailwind CSS
+- Preference: Use Metronic's specific UI patterns (Metronic 'duotune' icons, 'card' classes, and 'menu-link' for navigation).
