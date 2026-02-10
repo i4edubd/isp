@@ -9,6 +9,8 @@ use App\Services\Sms\SmsGatewayInterface;
 use App\Services\Sms\CompositeGateway;
 use App\Services\Sms\MaestroGateway;
 use Illuminate\Support\Facades\Config;
+use App\Services\Payment\PaymentGatewayInterface;
+use App\Services\Payment\DummyGateway;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,6 +38,11 @@ class AppServiceProvider extends ServiceProvider
             }
 
             return new CompositeGateway($instances);
+        });
+
+        // Bind a dummy payment gateway - replace with real gateway bindings per environment
+        $this->app->singleton(PaymentGatewayInterface::class, function ($app) {
+            return new DummyGateway();
         });
     }
 

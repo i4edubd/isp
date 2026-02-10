@@ -1,5 +1,4 @@
-<?php
-@extends ('laraview.layouts.sideNavLayout')
+@extends('laraview.layouts.sideNavLayout')
 
 @section('title')
 Import PPPoE Customers
@@ -27,7 +26,7 @@ $active_link = '4';
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="{{ route('pppoe_import_from_xl.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('pppoe-import-store') }}" enctype="multipart/form-data">
             @csrf
 
             <!-- Operator -->

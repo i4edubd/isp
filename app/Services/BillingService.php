@@ -123,11 +123,3 @@ class BillingService
         return ['created' => $created, 'errors' => $errors];
     }
 }
-<?php
-
-namespace App\Services;
-
-class BillingService
-{
-    //
-}
