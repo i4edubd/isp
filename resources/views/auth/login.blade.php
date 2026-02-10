@@ -44,6 +44,10 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Login') }}
                                 </button>
+                                <button type="button" id="login-passkey-button" class="btn btn-secondary">
+                                    {{ __('Login with Passkey') }}
+                                </button>
+                                <p id="status"></p>
                             </div>
                         </div>
                     </form>
@@ -52,4 +56,56 @@
         </div>
     </div>
 </div>
+
+<script>
+    const status = document.getElementById('status');
+
+    document.getElementById('login-passkey-button').addEventListener('click', async () => {
+        status.textContent = 'Generating login options...';
+
+        try {
+            const response = await fetch('{{ route('webauthn.login.options') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+            });
+
+            const options = await response.json();
+
+            if (response.status !== 200) {
+                throw new Error(options.message);
+            }
+
+            status.textContent = 'Please follow your browser instructions to use your passkey.';
+
+            const {
+                get
+            } = await import('https://cdn.jsdelivr.net/npm/@github/webauthn-json/dist/esm/webauthn-json.js');
+
+            const credential = await get(options);
+
+            const loginResponse = await fetch('{{ route('webauthn.login') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify(credential)
+            });
+
+            const loginResult = await loginResponse.json();
+
+            if (loginResponse.status !== 200) {
+                throw new Error(loginResult.message);
+            }
+
+            status.textContent = loginResult.message;
+            window.location.href = '/dashboard';
+        } catch (error) {
+            status.textContent = 'Error: ' + error.message;
+        }
+    });
+</script>
 @endsection

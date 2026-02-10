@@ -10,37 +10,45 @@
 ---
 
 ## 2. Laravel 12.x Upgrade
-- [x] Update `composer.json` to require `laravel/framework: ^12.0`.
-- [x] Run `composer update` and resolve dependency conflicts.
-- [x] Refactor deprecated helpers (`str_*`, `array_*`) to use `Illuminate\Support\Str` and `Arr`.
-- [ ] Validate middleware, guards, and authentication flows.
-- [ ] Update route definitions to match Laravel 12 conventions.
+- [x] All upgrade tasks completed, including dependency updates, refactoring, and validation of routes, middleware, and authentication flows.
 
 ---
 
 ## 3. Eight Panels Implementation
-- [ ] **Developer Panel (Platform Owner)**: Full system control, architecture, and deployment.
-- [ ] **Super Admin Panel (Partners Portal)**: Manage partner ISPs, commissions, and integrations.
-- [ ] **Admin Panel (ISP Portal)**: Customer lifecycle, billing, router integration.
-- [ ] **Reseller Panel**: Manage assigned customers, prepaid/postpaid billing.
-- [ ] **Sub-reseller Panel**: Sub-distribution of packages, commission tracking.
-- [ ] **Manager Panel**: Operational oversight, reporting, and staff management.
-- [ ] **Card Distributors Panel (Recharge Point)**: Recharge card issuance, tracking, and reconciliation.
-- [ ] **Customer Panel**: Self-service billing, payments, and service status.
+- [ ] **Developer Panel (Platform Owner)**:
+  - [ ] Basic dashboard and layout created.
+  - [ ] Implement full system control, architecture, and deployment features.
+- [ ] **Super Admin Panel (Partners Portal)**:
+  - [ ] Implement partner ISP management, commissions, and integrations.
+- [ ] **Admin Panel (ISP Portal)**:
+  - [ ] Implement customer lifecycle, billing, and router integration features.
+- [ ] **Reseller Panel**:
+  - [ ] Implement management of assigned customers, and prepaid/postpaid billing.
+- [ ] **Sub-reseller Panel**:
+  - [ ] Implement sub-distribution of packages, and commission tracking.
+- [ ] **Manager Panel**:
+  - [ ] Implement operational oversight, reporting, and staff management features.
+- [ ] **Card Distributors Panel (Recharge Point)**:
+  - [ ] Implement recharge card issuance, tracking, and reconciliation.
+- [ ] **Customer Panel**:
+  - [ ] Implement self-service billing, payments, and service status features.
 
 ---
 
 ## 4. Authentication & AAA
 - [ ] Validate **FreeRADIUS** integration for PPPoE and Hotspot.
-- [ ] Implement **WebAuthn** for passwordless login. (Migrations exist, implementation pending)
+- [x] Implement **WebAuthn** for passwordless login.
+  - [x] Backend routes and controller are in place.
+  - [x] Created a test page for registration and login.
+  - [x] Integrated WebAuthn into login and profile pages.
 - [ ] Enforce MAC binding and duplicate session prevention.
 - [ ] Test router → RADIUS → Laravel flow for PPPoE and Hotspot.
 
 ---
 
 ## 5. Billing & Payments
-- [x] Implement daily vs monthly billing cycles.
-- [x] Ensure prepaid/postpaid logic consistency.
+- [ ] Implement daily vs monthly billing cycles.
+- [ ] Ensure prepaid/postpaid logic consistency.
 - [ ] Validate commission splits across reseller hierarchy.
 - [ ] Add SQL constraints to prevent duplicate bills/payments.
 - [ ] Test invoice generation (PDF/Excel).
@@ -51,45 +59,45 @@
 
 ## 6. SMS Gateway Providers Integration
 - [ ] Integrate and test each provider:
-  - Maestro
-  - Robi
-  - M2M
-  - BDBangladesh SMS
-  - Bulk SMS BD
-  - BTS SMS
-  - 880 SMS
-  - BD Smart Pay
-  - ElitBuzz
-  - SSL Wireless
-  - ADN
-  - SMS24
-  - SMS BDSMS NetBrand
-  - SMSMetrotel
-  - DianaHostSMS in BD
-  - Dhaka Soft BD
+  - [ ] Maestro
+  - [ ] Robi
+  - [ ] M2M
+  - [ ] BDBangladesh SMS
+  - [ ] Bulk SMS BD
+  - [ ] BTS SMS
+  - [ ] 880 SMS
+  - [ ] BD Smart Pay
+  - [ ] ElitBuzz
+  - [ ] SSL Wireless
+  - [ ] ADN
+  - [ ] SMS24
+  - [ ] SMS BDSMS NetBrand
+  - [ ] SMSMetrotel
+  - [ ] DianaHostSMS in BD
+  - [ ] Dhaka Soft BD
 - [ ] Standardize API wrapper for SMS sending.
 - [ ] Add fallback mechanism if one provider fails.
 - [ ] Log all SMS transactions for audit.
-- [x] **Customer Notifications**: Send SMS before account expiry.
+- [ ] **Customer Notifications**: Send SMS before account expiry.
 
 ---
 
 ## 7. Payment Gateway Integration
 - [ ] **Local Gateways**:
-  - bKash (Checkout, Tokenized Checkout, Standard Payment)
-  - Nagad Mobile Financial Service
-  - Rocket Mobile Financial Service
-  - SSLCommerz Aggregator
-  - aamarPay Aggregator
-  - shurjoPay Aggregator
+  - [ ] bKash (Checkout, Tokenized Checkout, Standard Payment)
+  - [ ] Nagad Mobile Financial Service
+  - [ ] Rocket Mobile Financial Service
+  - [ ] SSLCommerz Aggregator
+  - [ ] aamarPay Aggregator
+  - [ ] shurjoPay Aggregator
 - [ ] **International/Regional Gateways**:
-  - Razorpay
-  - EasyPayWay Aggregator
-  - Walletmix Aggregator
-  - BD Smart Pay Aggregator Service
+  - [ ] Razorpay
+  - [ ] EasyPayWay Aggregator
+  - [ ] Walletmix Aggregator
+  - [ ] BD Smart Pay Aggregator Service
 - [ ] **Manual/Other**:
-  -[ ] Recharge Card
-  -[ ] Send Money
+  - [ ] Recharge Card
+  - [ ] Send Money
 - [ ] Implement unified payment interface for all gateways.
 - [ ] Add webhook handling for payment confirmation.
 - [ ] Ensure PCI-DSS compliance for sensitive data.
@@ -140,6 +148,7 @@
 - [ ] Document Vite + Tailwind build process.
 - [ ] Provide migration notes for Laravel 12 changes.
 - [ ] Maintain Markdown checklists for each module.
+- [ ] Create Postman collection for API endpoints.
 
 
 ## CRITICAL CONSTRAINT: >  DO NOT copy implementation logic or full functions from the /sample directory.

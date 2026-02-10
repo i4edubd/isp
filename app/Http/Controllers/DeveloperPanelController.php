@@ -8,6 +8,7 @@ class DeveloperPanelController extends Controller
 {
     public function index()
     {
-        return view('developer.dashboard');
+        $status = 'All systems are operational.';
+        return view('developer.dashboard', compact('status'));
     }
 }

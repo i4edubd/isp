@@ -12,6 +12,7 @@ use App\Http\Controllers\AdminPanelController;
 use App\Http\Controllers\ResellerPanelController;
 use App\Http\Controllers\SubResellerPanelController;
 use App\Http\Controllers\ManagerPanelController;
+use App\Http\Controllers\CardDistributorsPanelController;
 use App\Http\Controllers\PaymentController;
 
 /*
@@ -123,11 +124,16 @@ Route::middleware(['auth', 'acl:manager'])->prefix('manager')->name('manager.')-
 | Card Distributors Panel Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'acl:card-distributor'])->prefix('card-distributors')->name('card-distributors.')->group(function () {
-    //
+Route::middleware(['auth', 'acl:card-distributor'])->prefix('card-distributor')->name('card-distributor.')->group(function () {
+    Route::get('/dashboard', [CardDistributorsPanelController::class, 'index'])->name('dashboard');
 });
 
 
+
+// WebAuthn Test Route
+Route::get('/webauthn-test', function () {
+    return view('webauthn');
+})->middleware('auth');
 
 // Keep the demo routes for now
 Route::prefix('demo')->group(function () {
@@ -143,3 +149,8 @@ Route::prefix('demo')->group(function () {
     Route::get('/9/profile', function () { return view('pages.demo9.profile'); })->name('demo9.profile');
     Route::get('/10', function () { return view('pages.demo10.index'); });
 });
+use App\Http\Controllers\MikrotikController;
+
+Route::get('/mikrotik', [MikrotikController::class, 'index'])->name('mikrotik.index');
+Route::get('/mikrotik/{router}', [MikrotikController::class, 'show'])->name('mikrotik.show');
+

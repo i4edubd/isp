@@ -1,0 +1,553 @@
+{
+	"info": {
+		"_postman_id": "a9f5c4a5-1b4f-4a6e-9e7e-7f0e9f3b3e2e",
+		"name": "ISP Billing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"\",\n    \"password\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"logout"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"\",\n    \"email\": \"\",\n    \"password\": \"\",\n    \"password_confirmation\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "WebAuthn Register Options",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webauthn/register/options",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webauthn",
+								"register",
+								"options"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "WebAuthn Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webauthn/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webauthn",
+								"register"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "WebAuthn Login Options",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webauthn/login/options",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webauthn",
+								"login",
+								"options"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "WebAuthn Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/webauthn/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"webauthn",
+								"login"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Get Accounts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts",
+								"1"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Account",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts",
+								"1"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts",
+								"1"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"dashboard"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Card Distributor",
+			"item": [
+				{
+					"name": "Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/card-distributor/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"card-distributor",
+								"dashboard"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/customer/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"customer",
+								"dashboard"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bills",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/customer/bills",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"customer",
+								"bills"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/customer/payments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"customer",
+								"payments"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Developer",
+			"item": [
+				{
+					"name": "Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/developer/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"developer",
+								"dashboard"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Manager",
+			"item": [
+				{
+					"name": "Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/manager/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"manager",
+								"dashboard"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Mikrotik",
+			"item": [
+				{
+					"name": "Get Routers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/mikrotik",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"mikrotik"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Router",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/mikrotik/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"mikrotik",
+								"1"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Initiate Payment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payment/initiate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payment",
+								"initiate"
+						]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment Webhook",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/payment/webhook/gateway",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payment",
+								"webhook",
+								"gateway"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reseller",
+			"item": [
+				{
+					"name": "Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reseller/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reseller",
+								"dashboard"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sub-reseller",
+			"item": [
+				{
+					"name": "Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sub-reseller/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sub-reseller",
+								"dashboard"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Super Admin",
+			"item": [
+				{
+					"name": "Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/super-admin/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"super-admin",
+								"dashboard"
+						]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
