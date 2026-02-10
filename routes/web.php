@@ -12,6 +12,8 @@ use App\Http\Controllers\AdminPanelController;
 use App\Http\Controllers\ResellerPanelController;
 use App\Http\Controllers\SubResellerPanelController;
 use App\Http\Controllers\ManagerPanelController;
+use App\Http\Controllers\PaymentController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,6 +41,14 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [AuthController::class, 'register']);
 
+// User Profile Page for WebAuthn Registration
+Route::middleware('auth')->get('/profile', function () {
+    return view('profile');
+})->name('profile');
+
+// Payment Initiation Route
+Route::middleware('auth')->post('/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +58,7 @@ Route::post('register', [AuthController::class, 'register']);
 | Routes for the customer self-service panel.
 |
 */
-Route::middleware('auth')->prefix('customer')->name('customer.')->group(function () {
+Route::middleware(['auth', 'acl:customer'])->prefix('customer')->name('customer.')->group(function () {
     Route::get('/dashboard', [CustomerPanelController::class, 'dashboard'])->name('dashboard');
     Route::get('/bills', [CustomerPanelController::class, 'bills'])->name('bills');
     Route::get('/payments', [CustomerPanelController::class, 'payments'])->name('payments');
@@ -68,7 +78,7 @@ Route::middleware(['auth', 'acl:developer'])->prefix('developer')->name('develop
 | Super Admin Panel Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->prefix('super-admin')->name('super-admin.')->group(function () {
+Route::middleware(['auth', 'acl:super-admin'])->prefix('super-admin')->name('super-admin.')->group(function () {
     Route::get('/dashboard', [SuperAdminPanelController::class, 'index'])->name('dashboard');
 });
 
@@ -77,7 +87,7 @@ Route::middleware('auth')->prefix('super-admin')->name('super-admin.')->group(fu
 | Admin Panel Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'acl:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminPanelController::class, 'index'])->name('dashboard');
 });
 
@@ -86,7 +96,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 | Reseller Panel Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->prefix('reseller')->name('reseller.')->group(function () {
+Route::middleware(['auth', 'acl:reseller'])->prefix('reseller')->name('reseller.')->group(function () {
     Route::get('/dashboard', [ResellerPanelController::class, 'index'])->name('dashboard');
 });
 
@@ -95,7 +105,7 @@ Route::middleware('auth')->prefix('reseller')->name('reseller.')->group(function
 | Sub-reseller Panel Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->prefix('sub-reseller')->name('sub-reseller.')->group(function () {
+Route::middleware(['auth', 'acl:sub-reseller'])->prefix('sub-reseller')->name('sub-reseller.')->group(function () {
     Route::get('/dashboard', [SubResellerPanelController::class, 'index'])->name('dashboard');
 });
 
@@ -104,7 +114,7 @@ Route::middleware('auth')->prefix('sub-reseller')->name('sub-reseller.')->group(
 | Manager Panel Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->prefix('manager')->name('manager.')->group(function () {
+Route::middleware(['auth', 'acl:manager'])->prefix('manager')->name('manager.')->group(function () {
     Route::get('/dashboard', [ManagerPanelController::class, 'index'])->name('dashboard');
 });
 
@@ -113,7 +123,7 @@ Route::middleware('auth')->prefix('manager')->name('manager.')->group(function (
 | Card Distributors Panel Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->prefix('card-distributors')->name('card-distributors.')->group(function () {
+Route::middleware(['auth', 'acl:card-distributor'])->prefix('card-distributors')->name('card-distributors.')->group(function () {
     //
 });
 

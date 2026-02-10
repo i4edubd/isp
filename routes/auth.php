@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate-support-facades-route;
-use App-Http-Controllers-Auth-WebAuthnController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\WebAuthnController;
 
 /*
 |--------------------------------------------------------------------------
